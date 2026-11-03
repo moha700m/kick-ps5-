@@ -29,6 +29,7 @@ function channelPayload(slug) {
   const live = Boolean(viewers);
   return {
     slug,
+    playback_url: live ? 'https://example.com/live.m3u8' : null,
     is_banned: false,
     verified: slug === 'xqc',
     followers_count: 100000 + slug.length * 111,
