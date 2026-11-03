@@ -91,7 +91,7 @@ function walk(dir) {
     const full = path.join(dir, entry.name);
     const relative = path.relative(root, full);
     if (entry.isDirectory()) out.push(...walk(full));
-    else if (scanExtensions.has(path.extname(entry.name)) && relative !== 'README.md' && relative !== 'scripts/check.mjs') out.push(full);
+    else if (scanExtensions.has(path.extname(entry.name)) && relative !== 'scripts/check.mjs') out.push(full);
   }
   return out;
 }

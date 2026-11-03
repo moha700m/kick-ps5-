@@ -311,8 +311,7 @@ body.kb-mode .hero-card:focus {
 }
 
 .nav-badge.is-empty {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--muted);
+  display: none;
 }
 
 .header-tools {
@@ -2324,6 +2323,9 @@ kbd {
   }
   .brand {
     gap: 0;
+  }
+  .nav-link[data-view="home"] {
+    display: none;
   }
   .nav-link {
     padding: 0.35rem 0.45rem;

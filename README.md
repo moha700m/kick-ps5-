@@ -74,7 +74,7 @@ npm run build        # إنتاج مجلد _site
 4. `npm run build` لإنتاج `_site`.
 5. رفع `_site` ونشرها إلى GitHub Pages.
 
-المصدر الوحيد للنشر هو GitHub Pages (`gh-pages` environment). لا توجد أي إعدادات لـ Cloudflare أو Vercel أو Render.
+المصدر الوحيد للنشر هو GitHub Pages (`github-pages` environment). لا توجد أي إعدادات لمنصات استضافة خارجية أخرى.
 
 ## الاختبارات
 
