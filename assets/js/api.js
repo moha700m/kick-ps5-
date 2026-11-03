@@ -136,6 +136,7 @@
       category: pickCategory(live),
       startedAt: live ? String(live.start_time || '') : '',
       language: live ? String(live.language || '') : '',
+      playbackUrl: String(source.playback_url || ''),
       mature: !!(live && live.is_mature)
     };
   }
