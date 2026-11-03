@@ -128,11 +128,28 @@ test.describe('Kick TV', () => {
       await expect(page.locator('#ps5Notice')).toBeVisible();
       await expect(page.locator('#playerPoster')).toBeVisible();
       await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'about:blank');
-      await expect(page.locator('#posterDirectLink')).toHaveAttribute('href', 'https://playstation.kick.com/xqc');
+      await expect(page.locator('#posterDirectLink')).toHaveAttribute('href', 'https://player.kick.com/xqc');
 
       await page.locator('#playerPoster [data-action="start-player"]').click();
       await expect(page.locator('#playerPoster')).toBeHidden();
+      await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://player.kick.com/xqc');
+    });
+
+    test('offers the PlayStation TV interface separately', async ({ page }) => {
+      await page.goto('/#/watch/xqc');
+      await expect(page.locator('#playerPoster')).toBeVisible();
+
+      await page.locator('#playerPoster [data-action="start-tv-player"]').click();
       await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://playstation.kick.com/xqc');
+    });
+
+    test('device check reports HLS, MSE and Kick API', async ({ page }) => {
+      await page.goto('/#/watch/xqc');
+      await page.locator('#playerPoster [data-action="device-check"]').click();
+
+      await expect(page.locator('.modal')).toBeVisible();
+      await expect(page.locator('.check-list')).toContainText('Media Source');
+      await expect(page.locator('#deviceApi')).toContainText('HLS متاح');
     });
 
     test('starts the native HLS player with the public playback URL', async ({ page }) => {

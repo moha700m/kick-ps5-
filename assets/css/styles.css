@@ -1739,6 +1739,63 @@ h1:focus {
   margin-top: 0.6rem;
 }
 
+.poster-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin-top: 0.35rem;
+  color: #43514a;
+  font-size: 0.74rem;
+}
+
+.link-btn {
+  padding: 0.15rem 0.1rem;
+  border: 0;
+  background: none;
+  color: var(--text-dim);
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(83, 252, 24, 0.35);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.link-btn:hover,
+.link-btn:focus-visible {
+  color: var(--green);
+}
+
+.check-list {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1rem;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.85rem;
+}
+
+.check-row strong {
+  color: var(--green);
+  font-size: 0.78rem;
+  text-align: left;
+  word-break: break-word;
+}
+
+.check-row:last-child strong {
+  color: var(--text);
+}
+
 .ps5-notice {
   margin-top: 0.9rem;
 }

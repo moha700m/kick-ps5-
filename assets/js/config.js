@@ -6,7 +6,7 @@
   'use strict';
 
   window.KICKTV_CONFIG = {
-    version: '2.3.0',
+    version: '2.4.0',
 
     /* Kick public web endpoints used by kick.com itself. */
     api: {
@@ -21,9 +21,12 @@
 
     player: {
       base: 'https://player.kick.com/{slug}',
-      ps5Base: 'https://playstation.kick.com/{slug}',
+      tvBase: 'https://playstation.kick.com/{slug}',
       params: '?autoplay=true',
-      loadHintMs: 12000
+      loadHintMs: 12000,
+      /* Kick's public playback token expires after a few minutes. */
+      tokenRefreshMs: 240000,
+      startTimeoutMs: 11000
     },
 
     links: {

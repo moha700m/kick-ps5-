@@ -547,7 +547,7 @@
 
       '<div id="ps5Notice" class="callout callout-warn ps5-notice" hidden>' +
         '<span class="callout-icon">' + icon('info') + '</span>' +
-        '<span class="callout-text"><strong>ملاحظة PS5:</strong> إذا ظهرت رسالة <span dir="ltr">Oops something went wrong</span> في مشغل Kick، جرّب «تشغيل HLS مباشر» — يشغّل نفس البث من مصدر Kick عبر مشغل الفيديو المدمج في PS5.</span>' +
+        '<span class="callout-text"><strong>ملاحظة PS5:</strong> ابدأ بـ«تشغيل مباشر». إذا لم يبدأ الفيديو تلقائياً سيفتح التطبيق مشغل Kick الرسمي. يمكنك أيضاً تجربة «واجهة PlayStation» أو «فحص الجهاز» لمعرفة ما يدعمه متصفحك.</span>' +
       '</div>' +
 
       '<div class="player-shell" id="playerShell">' +
@@ -555,11 +555,17 @@
           '<div class="player-poster" id="playerPoster" hidden>' +
             '<span class="poster-kicker">KICK PLAYER</span>' +
             '<strong class="poster-title" dir="auto">' + esc(seed.name) + '</strong>' +
-            '<span class="poster-text">جرّب «تشغيل HLS مباشر» أولاً — يشغّل البث عبر مشغل الفيديو المدمج في PS5 بدون واجهة Kick. وإذا لم يعمل، استخدم مشغل PlayStation الرسمي.</span>' +
+            '<span class="poster-text">اختر طريقة التشغيل: «تشغيل مباشر» يشغّل البث في مشغل الفيديو المدمج بدون واجهة Kick، و«مشغل Kick» يستخدم مشغل Kick الرسمي.</span>' +
             '<div class="poster-actions">' +
-              '<button class="btn btn-primary" type="button" data-action="start-native-player">' + icon('play') + 'تشغيل HLS مباشر</button>' +
-              '<button class="btn btn-ghost" type="button" data-action="start-player">' + icon('tv') + 'مشغل PlayStation الرسمي</button>' +
-              '<a class="btn btn-ghost" id="posterDirectLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح المشغل مباشرة</a>' +
+              '<button class="btn btn-primary" type="button" data-action="start-native-player">' + icon('play') + 'تشغيل مباشر</button>' +
+              '<button class="btn btn-ghost" type="button" data-action="start-player">' + icon('tv') + 'مشغل Kick</button>' +
+            '</div>' +
+            '<div class="poster-links">' +
+              '<button class="link-btn" type="button" data-action="start-tv-player">واجهة PlayStation</button>' +
+              '<span aria-hidden="true">·</span>' +
+              '<a class="link-btn" id="posterDirectLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">فتح في نافذة جديدة</a>' +
+              '<span aria-hidden="true">·</span>' +
+              '<button class="link-btn" type="button" data-action="device-check">فحص الجهاز</button>' +
             '</div>' +
           '</div>' +
           '<iframe id="kickPlayer" class="player-iframe" src="about:blank" title="مشغل Kick لقناة ' + esc(seed.name) + '" ' +
@@ -578,11 +584,13 @@
       '<div class="player-bar">' +
         '<span class="player-state" id="playerState">جارٍ تجهيز المشغل…</span>' +
         '<div class="player-bar-actions">' +
-          '<a class="btn btn-ghost btn-small" id="directPlayerLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح المشغل مباشرة</a>' +
+          '<a class="btn btn-ghost btn-small" id="directPlayerLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح مباشر</a>' +
           '<a class="btn btn-ghost btn-small" id="kickLink" href="https://kick.com/' + encodeURIComponent(slug) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح على Kick</a>' +
-          '<button class="btn btn-ghost btn-small" type="button" data-action="start-player">' + icon('tv') + 'مشغل PlayStation</button>' +
-          '<button class="btn btn-ghost btn-small" type="button" data-action="start-native-player">' + icon('play') + 'HLS مباشر</button>' +
+          '<button class="btn btn-ghost btn-small" type="button" data-action="start-player">' + icon('tv') + 'مشغل Kick</button>' +
+          '<button class="btn btn-ghost btn-small" type="button" data-action="start-tv-player">' + icon('tv') + 'واجهة PlayStation</button>' +
+          '<button class="btn btn-ghost btn-small" type="button" data-action="start-native-player">' + icon('play') + 'تشغيل مباشر</button>' +
           '<button class="btn btn-ghost btn-small" type="button" data-action="reload-player">' + icon('refresh') + 'إعادة تحميل</button>' +
+          '<button class="btn btn-ghost btn-small" type="button" data-action="device-check">' + icon('help') + 'فحص الجهاز</button>' +
         '</div>' +
       '</div>' +
 
@@ -888,10 +896,11 @@
   /* ------------------------------------------------------------------ */
 
   function playerUrl(slug, autoplay) {
-    if (isPS5()) {
-      return CFG.player.ps5Base.replace('{slug}', encodeURIComponent(slug));
-    }
     return CFG.player.base.replace('{slug}', encodeURIComponent(slug)) + (autoplay ? CFG.player.params : '');
+  }
+
+  function tvPlayerUrl(slug) {
+    return CFG.player.tvBase.replace('{slug}', encodeURIComponent(slug));
   }
 
   function onPlayerFrameLoad() {
@@ -903,7 +912,7 @@
     state.player.loaded = true;
     var loading = doc.getElementById('playerLoading');
     if (loading) loading.classList.add('is-hidden');
-    setText('playerState', 'تم تحميل إطار مشغل Kick. إذا لم يبدأ الفيديو فاستخدم «إعادة التحميل» أو افتح القناة على Kick.');
+    setText('playerState', 'تم تحميل مشغل Kick. إذا لم يبدأ الفيديو فاستخدم «إعادة تحميل» أو افتح القناة على Kick.');
     iframe.classList.add('is-ready');
   }
 
@@ -913,11 +922,11 @@
     hint.hidden = false;
     var text = doc.getElementById('playerHintText');
     if (text && force) {
-      text.textContent = 'إذا ظهرت شاشة سوداء أو رسالة خطأ: قد يمنع متصفح PS5 تشغيل الفيديو التلقائي أو ملفات تعريف الارتباط. جرّب إعادة التحميل أو افتح القناة على Kick.';
+      text.textContent = 'إذا ظهرت شاشة سوداء أو رسالة خطأ: قد يمنع متصفح PS5 تشغيل الفيديو التلقائي أو ملفات تعريف الارتباط. جرّب «تشغيل مباشر» أو افتح القناة على Kick.';
     }
   }
 
-  function resetPlayerFrame(slug) {
+  function resetPlayerFrame(slug, url) {
     var iframe = doc.getElementById('kickPlayer');
     var loading = doc.getElementById('playerLoading');
     var hint = doc.getElementById('playerHint');
@@ -930,81 +939,211 @@
     iframe.src = 'about:blank';
     window.setTimeout(function () {
       if (state.route.name !== 'watch' || state.route.params.slug !== slug) return;
-      iframe.src = playerUrl(slug, state.player.autoplay);
+      iframe.src = url || playerUrl(slug, state.player.autoplay);
     }, 60);
     state.player.hintTimer = window.setTimeout(function () {
       if (!state.player.loaded) showPlayerHint(false);
     }, CFG.player.loadHintMs);
   }
 
+  function stopNativeTimers() {
+    window.clearTimeout(state.player.watchdog);
+    window.clearTimeout(state.player.refreshTimer);
+    window.clearTimeout(state.player.stallTimer);
+    state.player.watchdog = null;
+    state.player.refreshTimer = null;
+    state.player.stallTimer = null;
+  }
+
+  function stopNativePlayer() {
+    stopNativeTimers();
+    var video = doc.getElementById('nativePlayer');
+    if (!video) return;
+    try { video.pause(); } catch (err) { /* ignore */ }
+    video.removeAttribute('src');
+    try { video.load(); } catch (err) { /* ignore */ }
+    video.hidden = true;
+  }
+
   function startPlayer() {
     if (state.route.name !== 'watch') return;
+    var slug = state.route.params.slug;
     var poster = doc.getElementById('playerPoster');
     if (poster) poster.hidden = true;
-    var native = doc.getElementById('nativePlayer');
-    if (native) {
-      native.pause();
-      native.removeAttribute('src');
-      native.load();
-      native.hidden = true;
-    }
+    state.player.mode = 'official';
+    state.player.deferred = false;
+    stopNativePlayer();
     var iframe = doc.getElementById('kickPlayer');
     if (iframe) iframe.classList.remove('is-hidden');
     var loading = doc.getElementById('playerLoading');
     if (loading) loading.classList.remove('is-hidden');
-    state.player.mode = 'official';
+    resetPlayerFrame(slug, playerUrl(slug, state.player.autoplay));
+    setText('playerState', 'جارٍ تحميل مشغل Kick…');
+  }
+
+  function startTvPlayer() {
+    if (state.route.name !== 'watch') return;
+    var slug = state.route.params.slug;
+    var poster = doc.getElementById('playerPoster');
+    if (poster) poster.hidden = true;
+    state.player.mode = 'tv';
     state.player.deferred = false;
-    resetPlayerFrame(state.route.params.slug);
-    setText('playerState', 'جارٍ تحميل مشغل PlayStation…');
+    stopNativePlayer();
+    var iframe = doc.getElementById('kickPlayer');
+    if (iframe) iframe.classList.remove('is-hidden');
+    var loading = doc.getElementById('playerLoading');
+    if (loading) loading.classList.remove('is-hidden');
+    resetPlayerFrame(slug, tvPlayerUrl(slug));
+    setText('playerState', 'جارٍ تحميل واجهة PlayStation…');
+  }
+
+  function nativeHlsSupport() {
+    var probe = doc.createElement('video');
+    var hls = probe.canPlayType('application/vnd.apple.mpegurl') || probe.canPlayType('application/x-mpegURL') || '';
+    var mse = typeof window.MediaSource !== 'undefined' || typeof window.ManagedMediaSource !== 'undefined';
+    return { hls: hls, mse: mse };
+  }
+
+  /* The public playback token dies after a few minutes. If HLS cannot start,
+   * fall back to Kick's own player instead of leaving a black rectangle. */
+  function nativeFail(reason) {
+    if (state.player.mode !== 'native') return;
+    stopNativePlayer();
+    state.player.mode = 'official';
+    setText('playerState', reason + ' — جارٍ فتح مشغل Kick…');
+    showToast('تعذر تشغيل HLS — تم التحويل إلى مشغل Kick');
+    var slug = state.route.params.slug;
+    window.setTimeout(function () {
+      if (state.route.name !== 'watch' || state.route.params.slug !== slug) return;
+      startPlayer();
+    }, 900);
+  }
+
+  function armNativeWatchdog() {
+    window.clearTimeout(state.player.watchdog);
+    state.player.watchdog = window.setTimeout(function () {
+      if (state.player.mode !== 'native' || state.route.name !== 'watch') return;
+      var video = doc.getElementById('nativePlayer');
+      if (!video) return;
+      if (video.readyState >= 2 || video.currentTime > 0.4) return;
+      nativeFail('لم يبدأ تشغيل HLS على هذا المتصفح');
+    }, CFG.player.startTimeoutMs);
+  }
+
+  function scheduleTokenRefresh() {
+    window.clearTimeout(state.player.refreshTimer);
+    state.player.refreshTimer = window.setTimeout(refreshNativeToken, CFG.player.tokenRefreshMs);
+  }
+
+  function refreshNativeToken() {
+    if (state.player.mode !== 'native' || state.route.name !== 'watch') return;
+    var slug = state.route.params.slug;
+    Api.getChannel(slug, { fresh: true }).then(function (channel) {
+      if (state.player.mode !== 'native' || state.route.params.slug !== slug) return;
+      var video = doc.getElementById('nativePlayer');
+      if (!video || !channel.playbackUrl) return;
+      video.src = channel.playbackUrl;
+      var attempt = video.play();
+      if (attempt && typeof attempt.catch === 'function') attempt.catch(function () { /* needs a tap */ });
+      scheduleTokenRefresh();
+      setText('playerState', 'مباشر · HLS');
+    }).catch(function () {
+      if (state.player.mode !== 'native') return;
+      state.player.refreshTimer = window.setTimeout(refreshNativeToken, 45000);
+    });
+  }
+
+  function playNative(channel) {
+    var video = doc.getElementById('nativePlayer');
+    if (!video) return;
+    if (!channel || !channel.playbackUrl) {
+      nativeFail('لا يوجد رابط بث مباشر لهذه القناة');
+      return;
+    }
+    state.player.mode = 'native';
+    state.player.deferred = false;
+
+    var poster = doc.getElementById('playerPoster');
+    if (poster) poster.hidden = true;
+    var iframe = doc.getElementById('kickPlayer');
+    if (iframe) {
+      iframe.src = 'about:blank';
+      iframe.classList.add('is-hidden');
+    }
+    var loading = doc.getElementById('playerLoading');
+    if (loading) loading.classList.add('is-hidden');
+    var hint = doc.getElementById('playerHint');
+    if (hint) hint.hidden = true;
+
+    video.hidden = false;
+    video.src = channel.playbackUrl;
+    setText('playerState', 'مباشر · جارٍ تشغيل HLS…');
+    var attempt = video.play();
+    if (attempt && typeof attempt.catch === 'function') {
+      attempt.catch(function () {
+        setText('playerState', 'اضغط زر التشغيل داخل الفيديو لبدء البث.');
+      });
+    }
+    armNativeWatchdog();
+    scheduleTokenRefresh();
   }
 
   function startNativePlayer() {
     if (state.route.name !== 'watch') return;
     var slug = state.route.params.slug;
-    var video = doc.getElementById('nativePlayer');
-    if (!video) return;
-
-    function play(channel) {
-      if (!channel || !channel.playbackUrl) {
-        setText('playerState', 'رابط HLS غير متاح — استخدم مشغل PlayStation الرسمي.');
-        showToast('لا يوجد رابط HLS مباشر لهذه القناة');
-        return;
-      }
-      state.player.mode = 'native';
-      state.player.deferred = false;
-      var poster = doc.getElementById('playerPoster');
-      if (poster) poster.hidden = true;
-      var iframe = doc.getElementById('kickPlayer');
-      if (iframe) {
-        iframe.src = 'about:blank';
-        iframe.classList.add('is-hidden');
-      }
-      var loading = doc.getElementById('playerLoading');
-      if (loading) loading.classList.add('is-hidden');
-      video.hidden = false;
-      video.src = channel.playbackUrl;
-      setText('playerState', 'مشغل HLS مباشر — جارٍ التحميل…');
-      var attempt = video.play();
-      if (attempt && typeof attempt.catch === 'function') {
-        attempt.catch(function () {
-          setText('playerState', 'اضغط زر التشغيل داخل الفيديو لبدء البث.');
-        });
-      }
-    }
-
-    if (state.player.channel && state.player.channel.playbackUrl) {
-      play(state.player.channel);
-      return;
-    }
     setText('playerState', 'جارٍ جلب رابط البث من Kick…');
-    Api.getChannel(slug).then(function (channel) {
+
+    Api.getChannel(slug, { fresh: true }).then(function (channel) {
       if (state.route.name !== 'watch' || state.route.params.slug !== slug) return;
       state.player.channel = channel;
-      play(channel);
+      playNative(channel);
     }).catch(function (error) {
       if (state.route.name !== 'watch') return;
       showWatchApiError(error);
-      setText('playerState', 'تعذر جلب رابط البث — استخدم مشغل PlayStation الرسمي.');
+      nativeFail('تعذر جلب رابط البث');
+    });
+  }
+
+  function openDeviceCheck() {
+    var slug = state.route.name === 'watch' ? state.route.params.slug : '';
+    var support = nativeHlsSupport();
+    var nativeHls = support.hls || 'غير مؤكد';
+    var rows = [
+      ['دعم HLS المدمج', nativeHls],
+      ['Media Source', support.mse ? 'مدعوم' : 'غير مدعوم'],
+      ['المتصفح', navigator.userAgent]
+    ];
+    var html = '<button class="modal-close" type="button" data-action="close-modal" aria-label="إغلاق">' + icon('close') + '</button>' +
+      '<p class="eyebrow">DEVICE CHECK</p>' +
+      '<h2 id="modalTitle">فحص تشغيل PS5</h2>' +
+      '<p class="modal-text">هذه القراءات من جهازك الآن. أرسل صورة منها إذا لم يعمل التشغيل.</p>' +
+      '<div class="check-list">' +
+      rows.map(function (row) {
+        return '<div class="check-row"><span>' + esc(row[0]) + '</span><strong dir="ltr">' + esc(row[1]) + '</strong></div>';
+      }).join('') +
+      '<div class="check-row" id="deviceApi"><span>Kick API</span><strong>جارٍ الفحص…</strong></div>' +
+      '</div>' +
+      '<div class="help-actions">' +
+      '<button class="btn btn-primary" type="button" data-action="start-native-player">' + icon('play') + 'اختبار HLS</button>' +
+      '<button class="btn btn-ghost" type="button" data-action="start-player">' + icon('tv') + 'مشغل Kick</button>' +
+      '</div>';
+    openModal(html);
+
+    if (!slug) {
+      setText('deviceApi', 'Kick API · افتح قناة أولاً');
+      return;
+    }
+    var started = Date.now();
+    Api.getChannel(slug, { fresh: true }).then(function (channel) {
+      var ms = Date.now() - started;
+      var node = doc.getElementById('deviceApi');
+      if (!node) return;
+      node.innerHTML = '<span>Kick API</span><strong dir="ltr">' + ms + 'ms · ' +
+        (channel.isLive ? 'مباشر' : 'غير مباشر') + ' · ' + (channel.playbackUrl ? 'HLS متاح' : 'لا يوجد HLS') + '</strong>';
+    }).catch(function (error) {
+      var node = doc.getElementById('deviceApi');
+      if (!node) return;
+      node.innerHTML = '<span>Kick API</span><strong dir="ltr">فشل: ' + esc((error && error.kind) || 'network') + '</strong>';
     });
   }
 
@@ -1098,7 +1237,7 @@
     }
 
     if (state.player.deferred) {
-      setText('playerState', 'مباشر الآن — اختر «تشغيل HLS مباشر» أو «مشغل PlayStation الرسمي».');
+      setText('playerState', 'مباشر الآن — اختر «تشغيل مباشر» أو «مشغل Kick».');
     } else if (channel.isLive) {
       setText('playerState', 'مباشر الآن' + (channel.viewers ? ' · ' + formatCount(channel.viewers) + ' مشاهد' : ''));
     } else if (channel.liveKnown) {
@@ -1176,7 +1315,10 @@
       backTo: backTo,
       autoplay: ps5 ? false : Store.getSettings().autoplay,
       deferred: ps5,
-      mode: ps5 ? 'deferred' : 'official'
+      mode: ps5 ? 'deferred' : 'official',
+      watchdog: null,
+      refreshTimer: null,
+      stallTimer: null
     };
 
     var ps5Notice = doc.getElementById('ps5Notice');
@@ -1187,13 +1329,31 @@
     var native = doc.getElementById('nativePlayer');
     if (native) {
       native.addEventListener('playing', function () {
-        if (state.player.mode === 'native') setText('playerState', 'مباشر الآن · HLS');
+        if (state.player.mode !== 'native') return;
+        window.clearTimeout(state.player.watchdog);
+        window.clearTimeout(state.player.stallTimer);
+        setText('playerState', 'مباشر الآن · HLS');
+      });
+      native.addEventListener('timeupdate', function () {
+        window.clearTimeout(state.player.stallTimer);
+      });
+      native.addEventListener('waiting', function () {
+        if (state.player.mode !== 'native') return;
+        window.clearTimeout(state.player.stallTimer);
+        state.player.stallTimer = window.setTimeout(function () {
+          if (state.player.mode === 'native') refreshNativeToken();
+        }, 18000);
       });
       native.addEventListener('error', function () {
         if (state.player.mode !== 'native') return;
         var code = native.error ? native.error.code : 0;
-        setText('playerState', 'تعذر تشغيل HLS (رمز ' + code + ') — استخدم مشغل PlayStation الرسمي.');
-        showToast('مشغل HLS لم يعمل على هذا المتصفح');
+        if (code === 4) {
+          nativeFail('هذا المتصفح لا يدعم HLS');
+        } else if (code === 2) {
+          nativeFail('انقطع اتصال البث');
+        } else {
+          refreshNativeToken();
+        }
       });
     }
 
@@ -1201,7 +1361,7 @@
       var poster = doc.getElementById('playerPoster');
       if (poster) poster.hidden = false;
       if (loading) loading.classList.add('is-hidden');
-      setText('playerState', 'أنت على PS5 — اختر «تشغيل HLS مباشر» أو «مشغل PlayStation الرسمي».');
+      setText('playerState', 'أنت على PS5 — اختر «تشغيل مباشر» أو «مشغل Kick».');
     } else if (iframe) {
       iframe.src = 'about:blank';
       window.setTimeout(function () {
@@ -1323,6 +1483,7 @@
   function renderRoute() {
     clearInterval(state.player.poll);
     clearTimeout(state.player.hintTimer);
+    stopNativeTimers();
 
     var route = parseHash();
     state.route = route;
@@ -1734,8 +1895,22 @@
       return;
     }
     if (action === 'toggle-favorite') { toggleWatchFavorite(); return; }
-    if (action === 'start-player') { startPlayer(); return; }
-    if (action === 'start-native-player') { startNativePlayer(); return; }
+    if (action === 'start-player') {
+      if (state.modalOpen) closeModal();
+      startPlayer();
+      return;
+    }
+    if (action === 'start-tv-player') {
+      if (state.modalOpen) closeModal();
+      startTvPlayer();
+      return;
+    }
+    if (action === 'start-native-player') {
+      if (state.modalOpen) closeModal();
+      startNativePlayer();
+      return;
+    }
+    if (action === 'device-check') { openDeviceCheck(); return; }
     if (action === 'open-direct-player') {
       var href = element.getAttribute('href');
       if (!href) return;

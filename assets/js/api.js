@@ -213,13 +213,14 @@
   var KickApi = {
     ApiError: ApiError,
 
-    getChannel: function (slug) {
+    getChannel: function (slug, options) {
       var clean = String(slug || '').toLowerCase();
       if (!/^[a-z0-9_]{1,25}$/.test(clean)) {
         return Promise.reject(new ApiError('invalid', 'Invalid channel name'));
       }
       var key = 'channel:' + clean;
-      var cached = readCache(key);
+      var fresh = !!(options && options.fresh);
+      var cached = fresh ? null : readCache(key);
       if (cached) return Promise.resolve(Object.assign({}, cached));
 
       return fetchJson(buildUrl(API.channel, { slug: clean })).then(function (payload) {
