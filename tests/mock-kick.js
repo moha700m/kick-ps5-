@@ -100,6 +100,14 @@ export async function mockKick(page) {
     await route.fulfill({ status: 404, headers, body: JSON.stringify({ message: 'Not found' }) });
   });
 
+  await page.route('https://playstation.kick.com/**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'text/html; charset=utf-8',
+      body: '<!doctype html><html><body style="margin:0;background:#000;color:#53fc18;font:16px sans-serif;display:grid;place-items:center;height:100vh">PLAYSTATION PLAYER MOCK</body></html>'
+    });
+  });
+
   await page.route('https://player.kick.com/**', async (route) => {
     await route.fulfill({
       status: 200,
