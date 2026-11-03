@@ -44,6 +44,10 @@
     return text ? text.charAt(0).toUpperCase() : 'K';
   }
 
+  function isPS5() {
+    return /PlayStation/i.test(window.navigator.userAgent || '');
+  }
+
   function formatCount(value) {
     var number = Number(value) || 0;
     if (number >= 1000000) {
@@ -522,6 +526,7 @@
 
   function watchHTML(slug) {
     var seed = channelSeed(slug);
+    var directUrl = playerUrl(slug, false);
     return '<div class="view view-watch" data-slug="' + esc(slug) + '">' +
       '<div class="watch-top">' +
         '<button class="btn btn-icon" type="button" data-action="back" aria-label="رجوع">' + icon('back') + '</button>' +
@@ -540,8 +545,22 @@
 
       '<div id="offlineNotice" class="callout callout-warn" hidden></div>' +
 
+      '<div id="ps5Notice" class="callout callout-warn ps5-notice" hidden>' +
+        '<span class="callout-icon">' + icon('info') + '</span>' +
+        '<span class="callout-text"><strong>ملاحظة PS5:</strong> إذا ظهرت رسالة <span dir="ltr">This embed seems to be misconfigured</span> فهي صادرة من مشغل Kick داخل متصفح PS5 وليست من التطبيق. استخدم «فتح المشغل مباشرة» أو «فتح على Kick».</span>' +
+      '</div>' +
+
       '<div class="player-shell" id="playerShell">' +
         '<div class="player-frame" id="playerFrame">' +
+          '<div class="player-poster" id="playerPoster" hidden>' +
+            '<span class="poster-kicker">KICK PLAYER</span>' +
+            '<strong class="poster-title" dir="auto">' + esc(seed.name) + '</strong>' +
+            '<span class="poster-text">إذا كان التضمين لا يعمل على PS5، افتح المشغل مباشرة.</span>' +
+            '<div class="poster-actions">' +
+              '<button class="btn btn-primary" type="button" data-action="start-player">' + icon('play') + 'تشغيل داخل الصفحة</button>' +
+              '<a class="btn btn-ghost" id="posterDirectLink" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح المشغل مباشرة</a>' +
+            '</div>' +
+          '</div>' +
           '<iframe id="kickPlayer" class="player-iframe" src="about:blank" title="مشغل Kick لقناة ' + esc(seed.name) + '" ' +
             'allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen ' +
             'referrerpolicy="strict-origin-when-cross-origin"></iframe>' +
@@ -557,6 +576,7 @@
       '<div class="player-bar">' +
         '<span class="player-state" id="playerState">جارٍ تجهيز المشغل…</span>' +
         '<div class="player-bar-actions">' +
+          '<a class="btn btn-ghost btn-small" id="directPlayerLink" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح المشغل مباشرة</a>' +
           '<a class="btn btn-ghost btn-small" id="kickLink" href="https://kick.com/' + encodeURIComponent(slug) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح على Kick</a>' +
           '<button class="btn btn-ghost btn-small" type="button" data-action="reload-player">' + icon('refresh') + 'إعادة تحميل</button>' +
         '</div>' +
@@ -901,15 +921,30 @@
     iframe.src = 'about:blank';
     window.setTimeout(function () {
       if (state.route.name !== 'watch' || state.route.params.slug !== slug) return;
-      iframe.src = playerUrl(slug, Store.getSettings().autoplay);
+      iframe.src = playerUrl(slug, state.player.autoplay);
     }, 60);
     state.player.hintTimer = window.setTimeout(function () {
       if (!state.player.loaded) showPlayerHint(false);
     }, CFG.player.loadHintMs);
   }
 
+  function startPlayer() {
+    if (state.route.name !== 'watch') return;
+    var poster = doc.getElementById('playerPoster');
+    if (poster) poster.hidden = true;
+    var loading = doc.getElementById('playerLoading');
+    if (loading) loading.classList.remove('is-hidden');
+    state.player.deferred = false;
+    resetPlayerFrame(state.route.params.slug);
+    setText('playerState', 'جارٍ تحميل المشغل…');
+  }
+
   function reloadPlayer() {
     if (state.route.name !== 'watch') return;
+    if (state.player.deferred) {
+      startPlayer();
+      return;
+    }
     resetPlayerFrame(state.route.params.slug);
     setText('playerState', 'جارٍ إعادة تحميل المشغل…');
     showToast('تمت إعادة تحميل المشغل');
@@ -989,7 +1024,9 @@
       }
     }
 
-    if (channel.isLive) {
+    if (state.player.deferred) {
+      setText('playerState', 'مباشر الآن — اختر «تشغيل داخل الصفحة» أو «فتح المشغل مباشرة».');
+    } else if (channel.isLive) {
       setText('playerState', 'مباشر الآن' + (channel.viewers ? ' · ' + formatCount(channel.viewers) + ' مشاهد' : ''));
     } else if (channel.liveKnown) {
       setText('playerState', 'القناة غير متصلة الآن');
@@ -1054,6 +1091,7 @@
     var iframe = doc.getElementById('kickPlayer');
     var loading = doc.getElementById('playerLoading');
     var backTo = state.player.backTo || '#/';
+    var ps5 = isPS5();
 
     state.player = {
       slug: slug,
@@ -1062,21 +1100,34 @@
       error: null,
       poll: null,
       hintTimer: null,
-      backTo: backTo
+      backTo: backTo,
+      autoplay: ps5 ? false : Store.getSettings().autoplay,
+      deferred: ps5
     };
 
-    if (iframe) {
-      iframe.addEventListener('load', onPlayerFrameLoad);
+    var ps5Notice = doc.getElementById('ps5Notice');
+    if (ps5 && ps5Notice) ps5Notice.hidden = false;
+
+    if (iframe) iframe.addEventListener('load', onPlayerFrameLoad);
+
+    if (ps5) {
+      var poster = doc.getElementById('playerPoster');
+      if (poster) poster.hidden = false;
+      if (loading) loading.classList.add('is-hidden');
+      setText('playerState', 'أنت على PS5 — اختر «تشغيل داخل الصفحة» أو «فتح المشغل مباشرة».');
+    } else if (iframe) {
       iframe.src = 'about:blank';
       window.setTimeout(function () {
         if (state.route.name !== 'watch' || state.route.params.slug !== slug) return;
-        iframe.src = playerUrl(slug, Store.getSettings().autoplay);
+        iframe.src = playerUrl(slug, state.player.autoplay);
       }, 80);
     }
 
-    state.player.hintTimer = window.setTimeout(function () {
-      if (!state.player.loaded) showPlayerHint(false);
-    }, CFG.player.loadHintMs);
+    if (!ps5) {
+      state.player.hintTimer = window.setTimeout(function () {
+        if (!state.player.loaded) showPlayerHint(false);
+      }, CFG.player.loadHintMs);
+    }
 
     Store.pushRecent({ slug: slug, name: channelSeed(slug).name });
     updateFavButton();
@@ -1596,6 +1647,7 @@
       return;
     }
     if (action === 'toggle-favorite') { toggleWatchFavorite(); return; }
+    if (action === 'start-player') { startPlayer(); return; }
     if (action === 'fullscreen') { toggleFullscreen(); return; }
     if (action === 'reload-player') { reloadPlayer(); return; }
     if (action === 'player-help') { showPlayerHint(true); return; }

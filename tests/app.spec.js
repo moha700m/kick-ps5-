@@ -120,6 +120,22 @@ test.describe('Kick TV', () => {
     expect(mobileOverflow).toBeLessThanOrEqual(1);
   });
 
+  test.describe('PS5 browser mode', () => {
+    test.use({ userAgent: 'Mozilla/5.0 (PlayStation 5 3.00) AppleWebKit/605.1.15 (KHTML, like Gecko)' });
+
+    test('defers the embed and offers a direct player link', async ({ page }) => {
+      await page.goto('/#/watch/xqc');
+      await expect(page.locator('#ps5Notice')).toBeVisible();
+      await expect(page.locator('#playerPoster')).toBeVisible();
+      await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'about:blank');
+      await expect(page.locator('#posterDirectLink')).toHaveAttribute('href', 'https://player.kick.com/xqc');
+
+      await page.locator('[data-action="start-player"]').click();
+      await expect(page.locator('#playerPoster')).toBeHidden();
+      await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://player.kick.com/xqc');
+    });
+  });
+
   test('keeps working when Kick API requests are blocked', async ({ page }) => {
     await page.route('https://kick.com/**', (route) => route.abort());
 
