@@ -128,11 +128,11 @@ test.describe('Kick TV', () => {
       await expect(page.locator('#ps5Notice')).toBeVisible();
       await expect(page.locator('#playerPoster')).toBeVisible();
       await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'about:blank');
-      await expect(page.locator('#posterDirectLink')).toHaveAttribute('href', 'https://player.kick.com/xqc');
+      await expect(page.locator('#posterDirectLink')).toHaveAttribute('href', 'https://playstation.kick.com/xqc');
 
       await page.locator('[data-action="start-player"]').click();
       await expect(page.locator('#playerPoster')).toBeHidden();
-      await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://player.kick.com/xqc');
+      await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://playstation.kick.com/xqc');
     });
   });
 
