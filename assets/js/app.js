@@ -580,6 +580,7 @@
         '<div class="player-bar-actions">' +
           '<a class="btn btn-ghost btn-small" id="directPlayerLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح المشغل مباشرة</a>' +
           '<a class="btn btn-ghost btn-small" id="kickLink" href="https://kick.com/' + encodeURIComponent(slug) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح على Kick</a>' +
+          '<button class="btn btn-ghost btn-small" type="button" data-action="start-player">' + icon('tv') + 'مشغل PlayStation</button>' +
           '<button class="btn btn-ghost btn-small" type="button" data-action="start-native-player">' + icon('play') + 'HLS مباشر</button>' +
           '<button class="btn btn-ghost btn-small" type="button" data-action="reload-player">' + icon('refresh') + 'إعادة تحميل</button>' +
         '</div>' +
