@@ -1,0 +1,21 @@
+{
+  "name": "Kick TV — PS5",
+  "short_name": "Kick TV",
+  "description": "واجهة تلفزيونية لمشاهدة قنوات Kick داخل المتصفح",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#070b09",
+  "theme_color": "#070b09",
+  "icons": [
+    {
+      "src": "./assets/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

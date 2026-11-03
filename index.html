@@ -1,37 +1,97 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080b0a"><meta name="description" content="Kick TV — واجهة مشاهدة Kick محسّنة للتلفزيون ويد التحكم">
-<title>Kick TV — PS5</title><link rel="stylesheet" href="./styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#070b09">
+  <meta name="color-scheme" content="dark">
+  <title>Kick TV — مشاهدة Kick على شاشة PS5</title>
+  <meta name="description" content="واجهة تلفزيونية غير رسمية لمشاهدة قنوات Kick المباشرة داخل متصفح PS5. تشغيل فوري من مشغل Kick الرسمي، مفضلة محلية، وتنقّل بيد التحكم.">
+  <link rel="icon" type="image/svg+xml" href="./assets/img/icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="preconnect" href="https://kick.com" crossorigin>
+  <link rel="preconnect" href="https://player.kick.com" crossorigin>
+  <link rel="preconnect" href="https://stream.kick.com" crossorigin>
+  <link rel="preconnect" href="https://files.kick.com" crossorigin>
+  <link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 <body>
-<div class="app-shell">
-<header class="topbar">
-  <a class="brand" href="#" aria-label="Kick TV home"><span class="brand-mark">K</span><span>KICK<span class="brand-tv">TV</span></span></a>
-  <nav class="nav"><button class="nav-btn active" data-view="home">الرئيسية</button><button class="nav-btn" data-view="browse">استكشاف</button><button class="nav-btn" data-view="favorites">المفضلة</button></nav>
-  <div class="top-actions"><span class="live-dot"></span><span class="live-label">LIVE</span><button id="helpBtn" class="icon-btn" aria-label="مساعدة">؟</button></div>
-</header>
-<main>
-<section id="homeView" class="view">
-  <div class="hero"><div class="hero-copy"><p class="eyebrow">YOUR STREAMING HUB</p><h1>البثوث اللي تحبها،<br><em>على شاشة أكبر.</em></h1><p class="sub">شغّل قناتك المفضلة من Kick وتحكّم بالتجربة من يد PS5.</p><div class="hero-actions"><button class="primary" id="focusSearch">ابحث عن قناة <span>⌕</span></button><a class="secondary" href="https://kick.com" target="_blank" rel="noopener">افتح Kick الرسمي ↗</a></div></div><div class="hero-art"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="play-symbol">▶</div><div class="hero-tag">LIVE STREAMING</div></div></div>
-  <div class="section-head"><div><p class="eyebrow">QUICK ACCESS</p><h2>ابدأ المشاهدة</h2></div><span class="muted">أدخل اسم قناة Kick</span></div>
-  <form id="channelForm" class="search-panel"><span class="search-icon">⌕</span><input id="channelInput" autocomplete="off" placeholder="مثال: xqc أو your_favorite_streamer" aria-label="اسم قناة Kick"><button class="primary" type="submit">تشغيل القناة</button></form>
-  <div class="quick-grid" id="quickChannels"></div>
-  <div class="section-head browse-head"><div><p class="eyebrow">DISCOVER KICK</p><h2>استكشف التصنيفات</h2></div></div>
-  <div class="category-grid" id="categoryGrid"></div>
-</section>
-<section id="browseView" class="view hidden"><div class="page-heading"><p class="eyebrow">DISCOVER</p><h1>استكشاف Kick</h1><p class="sub">اختر تصنيفاً لفتح البثوث على موقع Kick الرسمي.</p></div><div class="category-grid" id="categoryGridBrowse"></div><a class="secondary external-link" href="https://kick.com/categories" target="_blank" rel="noopener">تصفح جميع التصنيفات على Kick ↗</a></section>
-<section id="favoritesView" class="view hidden"><div class="page-heading"><p class="eyebrow">YOUR LIST</p><h1>قنواتك المفضلة</h1><p class="sub">احفظ أسماء القنوات للوصول السريع من التلفزيون.</p></div><div id="favoritesList" class="quick-grid"></div></section>
-<section id="playerView" class="player-view hidden">
-  <div class="player-top"><button id="backBtn" class="secondary">← رجوع</button><div><p class="eyebrow">NOW PLAYING</p><h2 id="playingName">Kick Channel</h2></div><button id="favoriteBtn" class="secondary">☆ أضف للمفضلة</button></div>
-  <div class="player-frame-wrap"><div id="playerLoading" class="player-loading">جاري تجهيز المشغل…</div><iframe id="kickPlayer" title="Kick live player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-  <div class="player-note"><span class="live-dot"></span> إذا لم يعمل الفيديو داخل PS5، افتح القناة على Kick الرسمي من الزر أدناه. دعم المتصفح المدمج ومشغل الفيديو غير مضمون.</div>
-  <a id="officialChannel" class="secondary" href="https://kick.com" target="_blank" rel="noopener">فتح القناة على Kick ↗</a>
-</section>
-</main>
-<footer><span>Kick TV <b>•</b> Unofficial community interface</span><span>ليس تطبيقاً رسمياً تابعاً لـ Kick أو PlayStation</span></footer>
-</div>
-<dialog id="helpDialog"><div class="dialog-content"><button id="closeHelp" class="close-btn">×</button><p class="eyebrow">PS5 CONTROLS</p><h2>التنقل بيد التحكم</h2><ul><li>استخدم الأسهم للتنقل بين العناصر.</li><li>زر × للاختيار، و○ للرجوع حسب دعم المتصفح.</li><li>لأفضل نتيجة افتح الرابط في نافذة الويب على PS5.</li><li>قد لا يدعم متصفح PS5 بعض خصائص المشغل أو تسجيل الدخول.</li></ul><button id="doneHelp" class="primary">تمام</button></div></dialog>
-<script src="./app.js"></script>
-</body></html>
+  <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow glow-a"></span>
+    <span class="ambient-glow glow-b"></span>
+    <span class="ambient-grid"></span>
+  </div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#/" aria-label="Kick TV — الرئيسية">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span class="brand-text">KICK<span class="brand-suffix">TV</span></span>
+        <span class="brand-tag">PS5</span>
+      </a>
+
+      <nav class="main-nav" aria-label="الأقسام الرئيسية">
+        <a class="nav-link" data-view="home" href="#/">الرئيسية</a>
+        <a class="nav-link" data-view="browse" href="#/browse">استكشاف</a>
+        <a class="nav-link" data-view="favorites" href="#/favorites">المفضلة <span class="nav-badge is-empty" id="favCount">0</span></a>
+      </nav>
+
+      <div class="header-tools">
+        <div class="status-chip" title="حالة بيانات Kick">
+          <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+          <span class="status-label" id="statusLabel">جارٍ التحديث</span>
+        </div>
+        <form class="header-search" id="headerSearchForm" role="search">
+          <span class="header-search-icon" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          </span>
+          <input id="headerSearchInput" type="search" name="q" autocomplete="off" spellcheck="false" placeholder="ابحث عن قناة…" aria-label="ابحث عن قناة على Kick">
+        </form>
+        <button class="icon-btn" id="helpBtn" type="button" aria-label="المساعدة والتحكم" title="المساعدة (؟)">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.6 2.6 0 1 1 3.6 2.4c-.8.4-1.2 1-1.2 1.9"/><path d="M12 17h.01"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div id="viewRoot"></div>
+    <noscript>
+      <div class="callout callout-warn" style="margin:2rem">
+        <span class="callout-text">يحتاج Kick TV إلى JavaScript لعرض القنوات والمشغل. فعّل JavaScript في المتصفح ثم أعد تحميل الصفحة.</span>
+      </div>
+    </noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <span class="brand-mark brand-mark-sm" aria-hidden="true">K</span>
+        <div>
+          <strong>Kick TV</strong>
+          <p>واجهة تلفزيونية غير رسمية لمشاهدة Kick داخل المتصفح.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="https://kick.com" target="_blank" rel="noopener noreferrer">Kick الرسمي</a>
+        <a href="https://kick.com/browse" target="_blank" rel="noopener noreferrer">تصفح القنوات</a>
+        <a href="https://github.com/moha700m/kick-ps5-" target="_blank" rel="noopener noreferrer">المصدر على GitHub</a>
+        <button class="footer-btn" type="button" data-action="help">المساعدة</button>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>ليست خدمة رسمية تابعة لـ Kick أو Sony PlayStation. المحتوى والعلامات التجارية ملك لأصحابها. يعتمد التشغيل على مشغل Kick الرسمي وقد يتأثر بقيود متصفح PS5.</p>
+      <span class="footer-build" id="buildInfo">static</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div id="modalRoot"></div>
+
+  <script src="./assets/js/config.js" defer></script>
+  <script src="./assets/js/store.js" defer></script>
+  <script src="./assets/js/api.js" defer></script>
+  <script src="./assets/js/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kick TV">
+  <rect width="64" height="64" rx="16" fill="#070b09"/>
+  <path d="M17 14h9v15.2L39.4 14H50L34.8 31.4 50.5 50h-11L26 34.2V50h-9z" fill="#53fc18"/>
+  <rect x="47" y="47" width="4" height="4" rx="1" fill="#53fc18" opacity=".55"/>
+</svg>
