@@ -52,6 +52,29 @@ test.describe('Kick TV', () => {
     await expect(page.locator('#favSummary')).toContainText('1 قناة');
   });
 
+  test('removes a favorite and clears the favorites list', async ({ page }) => {
+    await page.goto('/#/watch/xqc');
+    await expect(page.locator('#watchName')).toHaveText('xQc');
+
+    await page.locator('#watchFav').click();
+    await expect(page.locator('#watchFav')).toContainText('في المفضلة');
+
+    await page.locator('#watchFav').click();
+    await expect(page.locator('#watchFav')).toContainText('أضف للمفضلة');
+    await expect(page.locator('#favCount')).toHaveText('0');
+
+    await page.locator('#watchFav').click();
+    await page.goto('/#/favorites');
+    await expect(page.locator('#favGrid .card[data-channel="xqc"]')).toBeVisible();
+
+    await page.locator('[data-action="clear-favorites"]').click();
+    await expect(page.locator('.modal')).toBeVisible();
+    await page.locator('[data-action="confirm-clear-favorites"]').click();
+
+    await expect(page.locator('#favGrid .empty')).toBeVisible();
+    await expect(page.locator('#favCount')).toHaveText('0');
+  });
+
   test('search finds a channel and starts playback', async ({ page }) => {
     await page.goto('/#/browse');
     await page.fill('#browseSearchInput', 'adin');

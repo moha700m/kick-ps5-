@@ -1470,15 +1470,11 @@
     state.modalOpen = true;
     doc.body.classList.add('modal-open');
 
-    var modal = $('.modal', root);
-    if (modal) {
-      modal.addEventListener('click', function (event) { event.stopPropagation(); });
-    }
-    root.addEventListener('click', function (event) {
+    root.onclick = function (event) {
       if (event.target && event.target.getAttribute && event.target.getAttribute('data-modal-close')) {
         closeModal();
       }
-    });
+    };
 
     var focusTarget = $('.modal-close', root) || $('button, a, input', modal);
     if (focusTarget) focusTarget.focus();
