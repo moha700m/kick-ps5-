@@ -188,6 +188,7 @@
           viewers: 0,
           title: '',
           thumbnail: '',
+          banner: '',
           category: null,
           startedAt: '',
           language: '',
@@ -226,6 +227,7 @@
           viewers: 0,
           title: '',
           thumbnail: '',
+          banner: '',
           category: null,
           error: error
         };
@@ -322,8 +324,10 @@
     var name = esc(channel.name || channel.slug);
     var title = esc(channel.title || channel.name || channel.slug);
     var liveClass = channel.isLive ? ' is-live' : '';
-    var thumb = channel.thumbnail
-      ? '<img class="card-img" src="' + esc(channel.thumbnail) + '" alt="" loading="lazy" decoding="async">'
+    var mediaSrc = channel.thumbnail || channel.banner || '';
+    var fallback = channel.thumbnail && channel.banner ? ' data-fallback="' + esc(channel.banner) + '"' : '';
+    var thumb = mediaSrc
+      ? '<img class="card-img" src="' + esc(mediaSrc) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"' + fallback + '>'
       : '';
     var category = channel.category && channel.category.name
       ? '<span class="dot" aria-hidden="true">·</span><span class="card-cat">' + esc(channel.category.name) + '</span>'
@@ -353,7 +357,10 @@
     return '<a class="hero-card" href="#/watch/' + encodeURIComponent(slug) + '" data-channel="' + esc(slug) + '" aria-label="شاهد ' + esc(channel.name) + ' الآن">' +
       '<span class="hero-card-media">' +
         '<span class="hero-card-mono" aria-hidden="true">' + esc(initial(channel.name)) + '</span>' +
-        (channel.thumbnail ? '<img class="hero-card-img" src="' + esc(channel.thumbnail) + '" alt="" decoding="async">' : '') +
+        (channel.thumbnail || channel.banner
+          ? '<img class="hero-card-img" src="' + esc(channel.thumbnail || channel.banner) + '" alt="" decoding="async" referrerpolicy="no-referrer"' +
+            (channel.thumbnail && channel.banner ? ' data-fallback="' + esc(channel.banner) + '"' : '') + '>'
+          : '') +
       '</span>' +
       '<span class="hero-card-shade" aria-hidden="true"></span>' +
       '<span class="hero-card-top">' +
@@ -391,7 +398,7 @@
     return '<a class="cat-card" href="https://kick.com/category/' + encodeURIComponent(slug) + '" target="_blank" rel="noopener noreferrer">' +
       '<span class="cat-media">' +
         '<span class="cat-mono" aria-hidden="true">' + esc(initial(category.name)) + '</span>' +
-        (category.banner ? '<img class="cat-img" src="' + esc(category.banner) + '" alt="" loading="lazy" decoding="async">' : '') +
+        (category.banner ? '<img class="cat-img" src="' + esc(category.banner) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">' : '') +
       '</span>' +
       '<span class="cat-shade" aria-hidden="true"></span>' +
       '<span class="cat-body"><strong>' + esc(category.name) + '</strong><small>' + views + '</small></span>' +
@@ -601,6 +608,7 @@
       viewers: 0,
       title: '',
       thumbnail: '',
+      banner: '',
       category: null
     };
   }
@@ -1757,7 +1765,14 @@
 
     doc.addEventListener('error', function (event) {
       var target = event.target;
-      if (target && target.tagName === 'IMG') target.classList.add('img-broken');
+      if (!target || target.tagName !== 'IMG') return;
+      var fallback = target.getAttribute('data-fallback');
+      if (fallback) {
+        target.removeAttribute('data-fallback');
+        target.src = fallback;
+        return;
+      }
+      target.classList.add('img-broken');
     }, true);
 
     window.addEventListener('gamepadconnected', function (event) {

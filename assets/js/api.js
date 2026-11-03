@@ -116,6 +116,9 @@
     var thumbnail = live && live.thumbnail && typeof live.thumbnail === 'object'
       ? absoluteImage(live.thumbnail.url)
       : '';
+    var banner = source.banner_image && typeof source.banner_image === 'object'
+      ? absoluteImage(source.banner_image.url)
+      : '';
 
     return {
       slug: slug,
@@ -129,6 +132,7 @@
       viewers: live ? (Number(live.viewer_count) || 0) : 0,
       title: live ? String(live.session_title || '') : '',
       thumbnail: thumbnail,
+      banner: banner,
       category: pickCategory(live),
       startedAt: live ? String(live.start_time || '') : '',
       language: live ? String(live.language || '') : '',
@@ -151,6 +155,7 @@
       viewers: 0,
       title: '',
       thumbnail: '',
+      banner: '',
       category: null,
       startedAt: '',
       language: '',

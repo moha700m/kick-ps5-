@@ -8,7 +8,7 @@
 
 | العنصر | القيمة |
 | --- | --- |
-| المتصفح | Chromium (Playwright 1.64، headless shell 156) |
+| المتصفح | Chromium (Playwright 1.64، headless shell 156) + WebKit (محرك قريب من PS5) |
 | دقة العرض | 1920×1080 و390×844 |
 | نظام التشغيل | Linux (بيئة CI / حاوية اختبار) |
 | Node.js | 24 محلياً، 20 في GitHub Actions |
@@ -35,6 +35,7 @@
 | 15 | GitHub Actions: `Deploy to GitHub Pages` | ناجح |
 | 16 | روابط التصنيفات الرسمية (`/category/irl`, `/category/just-chatting`, ...) | HTTP 200 |
 | 17 | مشغل Kick لقنوات حقيقية (`xqc`, `davooxeneize`) | HTTP 200 |
+| 18 | تحميل الصفحة وتشغيلها على WebKit مع بيانات Kick حقيقية | ناجح — 11 قناة، 0 Overflow، لا أخطاء JavaScript، وبديل بانر للصور المرفوضة |
 
 ## ما تم التحقق منه على واجهات Kick
 
