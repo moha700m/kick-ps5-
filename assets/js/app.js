@@ -558,7 +558,7 @@
             '<span class="poster-text">إذا كان التضمين لا يعمل على PS5، افتح المشغل مباشرة.</span>' +
             '<div class="poster-actions">' +
               '<button class="btn btn-primary" type="button" data-action="start-player">' + icon('play') + 'تشغيل داخل الصفحة</button>' +
-              '<a class="btn btn-ghost" id="posterDirectLink" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح المشغل مباشرة</a>' +
+              '<a class="btn btn-ghost" id="posterDirectLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح المشغل مباشرة</a>' +
             '</div>' +
           '</div>' +
           '<iframe id="kickPlayer" class="player-iframe" src="about:blank" title="مشغل Kick لقناة ' + esc(seed.name) + '" ' +
@@ -576,7 +576,7 @@
       '<div class="player-bar">' +
         '<span class="player-state" id="playerState">جارٍ تجهيز المشغل…</span>' +
         '<div class="player-bar-actions">' +
-          '<a class="btn btn-ghost btn-small" id="directPlayerLink" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح المشغل مباشرة</a>' +
+          '<a class="btn btn-ghost btn-small" id="directPlayerLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('play') + 'فتح المشغل مباشرة</a>' +
           '<a class="btn btn-ghost btn-small" id="kickLink" href="https://kick.com/' + encodeURIComponent(slug) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح على Kick</a>' +
           '<button class="btn btn-ghost btn-small" type="button" data-action="reload-player">' + icon('refresh') + 'إعادة تحميل</button>' +
         '</div>' +
@@ -1648,6 +1648,14 @@
     }
     if (action === 'toggle-favorite') { toggleWatchFavorite(); return; }
     if (action === 'start-player') { startPlayer(); return; }
+    if (action === 'open-direct-player') {
+      var href = element.getAttribute('href');
+      if (!href) return;
+      var popup = null;
+      try { popup = window.open(href, '_blank'); } catch (err) { popup = null; }
+      if (!popup) window.location.href = href;
+      return;
+    }
     if (action === 'fullscreen') { toggleFullscreen(); return; }
     if (action === 'reload-player') { reloadPlayer(); return; }
     if (action === 'player-help') { showPlayerHint(true); return; }
