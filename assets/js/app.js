@@ -1116,7 +1116,7 @@
     var html = '<button class="modal-close" type="button" data-action="close-modal" aria-label="إغلاق">' + icon('close') + '</button>' +
       '<p class="eyebrow">DEVICE CHECK</p>' +
       '<h2 id="modalTitle">فحص تشغيل PS5</h2>' +
-      '<p class="modal-text">هذه القراءات من جهازك الآن. أرسل صورة منها إذا لم يعمل التشغيل.</p>' +
+      '<p class="modal-text">هذه القراءات من جهازك الآن. «maybe» تعني أن المتصفح يعلن دعم HLS — اضغط «اختبار HLS» للتأكد. أرسل صورة من الشاشة إذا لم يعمل التشغيل.</p>' +
       '<div class="check-list">' +
       rows.map(function (row) {
         return '<div class="check-row"><span>' + esc(row[0]) + '</span><strong dir="ltr">' + esc(row[1]) + '</strong></div>';
