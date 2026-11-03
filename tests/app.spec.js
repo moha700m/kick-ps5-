@@ -134,6 +134,14 @@ test.describe('Kick TV', () => {
       await expect(page.locator('#playerPoster')).toBeHidden();
       await expect(page.locator('#kickPlayer')).toHaveAttribute('src', 'https://playstation.kick.com/xqc');
     });
+
+    test('starts the native HLS player with the public playback URL', async ({ page }) => {
+      await page.goto('/#/watch/xqc');
+      await expect(page.locator('#playerPoster')).toBeVisible();
+      await page.locator('[data-action="start-native-player"]').click();
+      await expect(page.locator('#nativePlayer')).toBeVisible();
+      await expect(page.locator('#nativePlayer')).toHaveAttribute('src', 'https://example.com/live.m3u8');
+    });
   });
 
   test('keeps working when Kick API requests are blocked', async ({ page }) => {
