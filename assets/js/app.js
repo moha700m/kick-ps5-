@@ -434,7 +434,8 @@
 
       '<section class="section" aria-labelledby="liveTitle">' +
         '<div class="section-head">' +
-          '<div><p class="section-kicker">LIVE ON KICK</p><h2 id="liveTitle"><span id="liveTitleText">مباشر الآن</span> <span class="count" id="liveCount"></span></h2></div>' +
+          '<div><p class="section-kicker">LIVE ON KICK</p><h2 id="liveTitle"><span id="liveTitleText">مباشر الآن</span> <span class="count" id="liveCount"></span></h2>' +
+            '<p class="section-note">قنوات مختارة نتحقق من حالة بثها مباشرة من Kick.</p></div>' +
           '<div class="section-tools"><span class="sync" id="liveMeta">جارٍ تحميل بيانات Kick…</span><a class="link-more" href="#/browse">عرض الكل' + icon('back') + '</a></div>' +
         '</div>' +
         '<div class="rail" id="liveRail">' + skeletonCards(6) + '</div>' +

@@ -920,6 +920,12 @@ body.kb-mode .hero-card:focus {
   gap: 1rem;
 }
 
+.section-note {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 .count {
   display: inline-grid;
   place-items: center;
