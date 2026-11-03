@@ -547,7 +547,7 @@
 
       '<div id="ps5Notice" class="callout callout-warn ps5-notice" hidden>' +
         '<span class="callout-icon">' + icon('info') + '</span>' +
-        '<span class="callout-text"><strong>ملاحظة PS5:</strong> إذا ظهرت رسالة <span dir="ltr">This embed seems to be misconfigured</span> فهي صادرة من مشغل Kick داخل متصفح PS5 وليست من التطبيق. استخدم «فتح المشغل مباشرة» أو «فتح على Kick».</span>' +
+        '<span class="callout-text"><strong>ملاحظة PS5:</strong> نشغّل هنا واجهة Kick الرسمية المخصصة للـ PlayStation داخل الصفحة. إذا لم يظهر الفيديو، استخدم «فتح المشغل مباشرة».</span>' +
       '</div>' +
 
       '<div class="player-shell" id="playerShell">' +
@@ -555,9 +555,9 @@
           '<div class="player-poster" id="playerPoster" hidden>' +
             '<span class="poster-kicker">KICK PLAYER</span>' +
             '<strong class="poster-title" dir="auto">' + esc(seed.name) + '</strong>' +
-            '<span class="poster-text">إذا كان التضمين لا يعمل على PS5، افتح المشغل مباشرة.</span>' +
+            '<span class="poster-text">نشغّل واجهة Kick الرسمية للـ PlayStation. إذا لم تبدأ، افتحها مباشرة.</span>' +
             '<div class="poster-actions">' +
-              '<button class="btn btn-primary" type="button" data-action="start-player">' + icon('play') + 'تشغيل داخل الصفحة</button>' +
+              '<button class="btn btn-primary" type="button" data-action="start-player">' + icon('play') + 'تشغيل مشغل PlayStation</button>' +
               '<a class="btn btn-ghost" id="posterDirectLink" data-action="open-direct-player" href="' + esc(directUrl) + '" target="_blank" rel="noopener noreferrer">' + icon('external') + 'فتح المشغل مباشرة</a>' +
             '</div>' +
           '</div>' +
@@ -884,13 +884,17 @@
   /* ------------------------------------------------------------------ */
 
   function playerUrl(slug, autoplay) {
+    if (isPS5()) {
+      return CFG.player.ps5Base.replace('{slug}', encodeURIComponent(slug));
+    }
     return CFG.player.base.replace('{slug}', encodeURIComponent(slug)) + (autoplay ? CFG.player.params : '');
   }
 
   function onPlayerFrameLoad() {
     if (state.route.name !== 'watch') return;
     var iframe = doc.getElementById('kickPlayer');
-    if (!iframe || String(iframe.src || '').indexOf('https://player.kick.com/') !== 0) return;
+    var source = String((iframe && iframe.src) || '');
+    if (!iframe || (source.indexOf('https://player.kick.com/') !== 0 && source.indexOf('https://playstation.kick.com/') !== 0)) return;
     state.player.loaded = true;
     var loading = doc.getElementById('playerLoading');
     if (loading) loading.classList.add('is-hidden');
@@ -1025,7 +1029,7 @@
     }
 
     if (state.player.deferred) {
-      setText('playerState', 'مباشر الآن — اختر «تشغيل داخل الصفحة» أو «فتح المشغل مباشرة».');
+      setText('playerState', 'مباشر الآن — اختر «تشغيل مشغل PlayStation» أو «فتح المشغل مباشرة».');
     } else if (channel.isLive) {
       setText('playerState', 'مباشر الآن' + (channel.viewers ? ' · ' + formatCount(channel.viewers) + ' مشاهد' : ''));
     } else if (channel.liveKnown) {
@@ -1114,7 +1118,7 @@
       var poster = doc.getElementById('playerPoster');
       if (poster) poster.hidden = false;
       if (loading) loading.classList.add('is-hidden');
-      setText('playerState', 'أنت على PS5 — اختر «تشغيل داخل الصفحة» أو «فتح المشغل مباشرة».');
+      setText('playerState', 'أنت على PS5 — اختر «تشغيل مشغل PlayStation» أو «فتح المشغل مباشرة».');
     } else if (iframe) {
       iframe.src = 'about:blank';
       window.setTimeout(function () {
