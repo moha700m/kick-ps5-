@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080b0a"><meta name="description" content="Kick TV — واجهة مشاهدة Kick محسّنة للتلفزيون ويد التحكم">
+<title>Kick TV — PS5</title><link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="app-shell">
+<header class="topbar">
+  <a class="brand" href="#" aria-label="Kick TV home"><span class="brand-mark">K</span><span>KICK<span class="brand-tv">TV</span></span></a>
+  <nav class="nav"><button class="nav-btn active" data-view="home">الرئيسية</button><button class="nav-btn" data-view="browse">استكشاف</button><button class="nav-btn" data-view="favorites">المفضلة</button></nav>
+  <div class="top-actions"><span class="live-dot"></span><span class="live-label">LIVE</span><button id="helpBtn" class="icon-btn" aria-label="مساعدة">؟</button></div>
+</header>
+<main>
+<section id="homeView" class="view">
+  <div class="hero"><div class="hero-copy"><p class="eyebrow">YOUR STREAMING HUB</p><h1>البثوث اللي تحبها،<br><em>على شاشة أكبر.</em></h1><p class="sub">شغّل قناتك المفضلة من Kick وتحكّم بالتجربة من يد PS5.</p><div class="hero-actions"><button class="primary" id="focusSearch">ابحث عن قناة <span>⌕</span></button><a class="secondary" href="https://kick.com" target="_blank" rel="noopener">افتح Kick الرسمي ↗</a></div></div><div class="hero-art"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="play-symbol">▶</div><div class="hero-tag">LIVE STREAMING</div></div></div>
+  <div class="section-head"><div><p class="eyebrow">QUICK ACCESS</p><h2>ابدأ المشاهدة</h2></div><span class="muted">أدخل اسم قناة Kick</span></div>
+  <form id="channelForm" class="search-panel"><span class="search-icon">⌕</span><input id="channelInput" autocomplete="off" placeholder="مثال: xqc أو your_favorite_streamer" aria-label="اسم قناة Kick"><button class="primary" type="submit">تشغيل القناة</button></form>
+  <div class="quick-grid" id="quickChannels"></div>
+  <div class="section-head browse-head"><div><p class="eyebrow">DISCOVER KICK</p><h2>استكشف التصنيفات</h2></div></div>
+  <div class="category-grid" id="categoryGrid"></div>
+</section>
+<section id="browseView" class="view hidden"><div class="page-heading"><p class="eyebrow">DISCOVER</p><h1>استكشاف Kick</h1><p class="sub">اختر تصنيفاً لفتح البثوث على موقع Kick الرسمي.</p></div><div class="category-grid" id="categoryGridBrowse"></div><a class="secondary external-link" href="https://kick.com/categories" target="_blank" rel="noopener">تصفح جميع التصنيفات على Kick ↗</a></section>
+<section id="favoritesView" class="view hidden"><div class="page-heading"><p class="eyebrow">YOUR LIST</p><h1>قنواتك المفضلة</h1><p class="sub">احفظ أسماء القنوات للوصول السريع من التلفزيون.</p></div><div id="favoritesList" class="quick-grid"></div></section>
+<section id="playerView" class="player-view hidden">
+  <div class="player-top"><button id="backBtn" class="secondary">← رجوع</button><div><p class="eyebrow">NOW PLAYING</p><h2 id="playingName">Kick Channel</h2></div><button id="favoriteBtn" class="secondary">☆ أضف للمفضلة</button></div>
+  <div class="player-frame-wrap"><div id="playerLoading" class="player-loading">جاري تجهيز المشغل…</div><iframe id="kickPlayer" title="Kick live player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+  <div class="player-note"><span class="live-dot"></span> إذا لم يعمل الفيديو داخل PS5، افتح القناة على Kick الرسمي من الزر أدناه. دعم المتصفح المدمج ومشغل الفيديو غير مضمون.</div>
+  <a id="officialChannel" class="secondary" href="https://kick.com" target="_blank" rel="noopener">فتح القناة على Kick ↗</a>
+</section>
+</main>
+<footer><span>Kick TV <b>•</b> Unofficial community interface</span><span>ليس تطبيقاً رسمياً تابعاً لـ Kick أو PlayStation</span></footer>
+</div>
+<dialog id="helpDialog"><div class="dialog-content"><button id="closeHelp" class="close-btn">×</button><p class="eyebrow">PS5 CONTROLS</p><h2>التنقل بيد التحكم</h2><ul><li>استخدم الأسهم للتنقل بين العناصر.</li><li>زر × للاختيار، و○ للرجوع حسب دعم المتصفح.</li><li>لأفضل نتيجة افتح الرابط في نافذة الويب على PS5.</li><li>قد لا يدعم متصفح PS5 بعض خصائص المشغل أو تسجيل الدخول.</li></ul><button id="doneHelp" class="primary">تمام</button></div></dialog>
+<script src="./app.js"></script>
+</body></html>
