@@ -6,7 +6,7 @@
   'use strict';
 
   window.KICKTV_CONFIG = {
-    version: '2.0.0',
+    version: '2.1.0',
 
     /* Kick public web endpoints used by kick.com itself. */
     api: {

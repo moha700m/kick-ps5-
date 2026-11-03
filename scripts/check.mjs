@@ -52,7 +52,7 @@ ok('view root', /id="viewRoot"/.test(html));
 ok('header search', /id="headerSearchForm"/.test(html));
 ok('help button', /id="helpBtn"/.test(html));
 ok('no inline event handlers', !/\son(click|load|error|submit)=/i.test(html));
-ok('scripts loaded in order', /src="\.\/assets\/js\/config\.js"[\s\S]+store\.js[\s\S]+api\.js[\s\S]+app\.js/.test(html));
+ok('scripts loaded in order', /src="\.\/assets\/js\/config\.js(?:\?[^"]*)?"[\s\S]+store\.js[\s\S]+api\.js[\s\S]+app\.js/.test(html));
 
 const localRefs = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((m) => m[1])
   .filter((ref) => !/^(https?:|#|mailto:|data:)/.test(ref));
