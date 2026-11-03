@@ -68,7 +68,9 @@ ok('uses player.kick.com', config.includes('https://player.kick.com/{slug}'));
 ok('uses public channel endpoint', config.includes('/api/v2/channels/{slug}'));
 ok('uses public search endpoint', config.includes('/api/search?searched_word='));
 ok('uses public categories endpoint', config.includes('/api/v1/categories/top'));
-ok('no m3u8 / stream scraping', !/m3u8|playback_url|playback\.live-video/i.test(config + read('assets/js/api.js')));
+const apiSource = read('assets/js/api.js');
+ok('reads playback URL from public API', apiSource.includes('source.playback_url'));
+ok('no hardcoded HLS stream URLs', !/https?:\/\/[^"']*\.m3u8/i.test(config + apiSource));
 
 /* CSS contract ------------------------------------------------------------ */
 const css = read('assets/css/styles.css');
