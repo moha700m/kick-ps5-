@@ -1,31 +1,99 @@
-# Kick TV — PS5 Web Player
+# Kick TV — واجهة Kick للتلفزيون و PS5
 
-Unofficial, TV-first web interface for opening Kick channels on PlayStation 5's embedded web view.
+واجهة ويب ثابتة (Static) لمشاهدة قنوات **Kick** على شاشة كبيرة، مبنية لتعمل داخل متصفح PlayStation 5 بدون كمبيوتر أو تطبيق خارجي.
 
-## Features
-- RTL Arabic UI with Kick-inspired dark/green styling.
-- Direct channel playback using Kick's public player embed: `https://player.kick.com/CHANNEL`.
-- Manual channel entry, recent channels, local favorites.
-- Category shortcuts open Kick's official category pages.
-- Large controls and keyboard/focus-friendly buttons for controller navigation.
-- Static site: no build step, no API keys, no server secrets.
+- **الموقع:** https://moha700m.github.io/kick-ps5-/
+- **المستودع:** https://github.com/moha700m/kick-ps5-
+- **النشر:** GitHub Pages عبر GitHub Actions فقط. لا يوجد Backend ولا سيرفر وسيط.
 
-## Deploy to Cloudflare Pages
-This repository is configured as a static site:
-- Framework preset: None
-- Build command: leave empty
-- Build output directory: `/`
-- Production branch: `main`
+> المشروع واجهة مجتمعية غير رسمية، غير تابعة لـ Kick أو Sony PlayStation.
 
-Connect the GitHub repository `moha700m/kick-ps5-` in Cloudflare Pages.
+## الميزات
 
-## Important compatibility notes
-This is a web app, **not** a native PS5 application. PS5 does not provide a normal installable browser or support installing arbitrary APK/IPA files. The embedded PS5 web view may restrict navigation, cookies, fullscreen, autoplay, or third-party player playback. The Kick player embed is used rather than scraping streams or proxying video. Test on the actual console before treating playback as supported.
+- واجهة تلفزيونية سوداء بهوية Kick الخضراء، بخطوط كبيرة ومسافات مناسبة للمشاهدة من بعيد.
+- دعم كامل للعربية ولاتجاه RTL، مع أرقام لاتينية داخل عناصر `dir="ltr"` لسهولة القراءة.
+- صفحة رئيسية تعرض: القنوات المباشرة، القنوات المقترحة، آخر ما شاهدته، المفضلة، والتصنيفات الرائجة.
+- بحث حقيقي عن القنوات بالاسم عبر واجهة Kick العامة.
+- مشغل Kick الرسمي: `https://player.kick.com/CHANNEL_NAME` مع معالجة أخطاء التحميل وملء الشاشة.
+- مفضلة وسجل مشاهدة محليان عبر `localStorage` (بدون حساب أو تسجيل دخول).
+- تنقّل بيد التحكم: الأسهم، × للاختيار، ○ للرجوع، L1/R1 بين الأقسام، Options للمساعدة.
+- بدائل كاملة بلوحة المفاتيح: Tab، الأسهم، Enter، Escape، `[` و`]`، `F` لملء الشاشة، `R` لإعادة التحميل.
+- وضع تدهور آمن: إذا منع المتصفح طلبات Kick، يعرض الموقع تنبيهاً واضحاً ويسمح بتشغيل أي قناة بالاسم مباشرة.
+- تصميم متجاوب: 1920×1080 للتلفزيون، وأجهزة لوحية وجوال.
 
-The app does not claim to enumerate every Kick live channel through a private/unofficial API. Channel discovery links open Kick's official directory/category pages. Users can play a channel by entering its Kick username.
+## كيف يعمل المصدر البياني؟
 
-## Local preview
-Open `index.html` in a modern browser or serve this folder with any static HTTP server.
+يستخدم التطبيق واجهات Kick العامة التي يستخدمها موقع Kick نفسه داخل المتصفح:
 
-## Legal
-Kick TV is an independent community interface and is not affiliated with Kick or Sony/PlayStation. Kick trademarks and player content remain their respective owners' property.
+| الغرض | المسار | ملاحظة |
+| --- | --- | --- |
+| بيانات قناة + حالة البث + المشاهدين | `https://kick.com/api/v2/channels/{slug}` | تتضمن `livestream.is_live` و`viewer_count` |
+| البحث عن قنوات | `https://kick.com/api/search?searched_word={q}` | يعيد قنوات مع `isLive` |
+| التصنيفات الرائجة | `https://kick.com/api/v1/categories/top` | أسماء وتصنيفات وأعداد مشاهدين وروابط رسمية |
+
+**بخصوص اكتشاف كل القنوات المباشرة:** Kick لا توفر قائمة عامة لكل البثوث دون مفاتيح تطبيق (OAuth). لذلك لا يخترع المشروع API غير موجود ولا يدّعي أنه يسرد الدليل كاملاً. الصفحة الرئيسية تتحقق من حالة **قائمة قنوات معروفة** (roster داخل `assets/js/config.js`) وتعرض المباشر منها فقط، مع رابط مباشر لدليل Kick الكامل للتصفح. هذا سلوك مقصود وموثّق، وليس محاكاة بيانات.
+
+## البنية
+
+```
+index.html                 واجهة التطبيق
+404.html                   صفحة الخطأ
+manifest.webmanifest       بيانات PWA بسيطة
+assets/css/styles.css      نظام التصميم والتلفزيون/RTL
+assets/js/config.js        الإعدادات، roster القنوات، تصنيفات احتياطية
+assets/js/store.js         localStorage: المفضلة، السجل، الإعدادات
+assets/js/api.js           عميل Kick API + cache + timeouts + concurrency
+assets/js/app.js           التوجيه، الواجهات، المشغل، التنقل، يد التحكم
+scripts/check.mjs          فحوصات سلامة الملفات والعقود
+scripts/build.mjs          بناء مجلد _site القابل للنشر
+scripts/serve.mjs          خادم محلي للاختبار
+tests/app.spec.js          اختبارات Playwright
+.github/workflows/deploy.yml  فحص + اختبار + نشر Pages
+```
+
+لا يوجد bundler ولا خطوة بناء للواجهة نفسها؛ `npm run build` ينسخ الملفات الثابتة إلى `_site` فقط.
+
+## التطوير المحلي
+
+```bash
+npm ci
+npm run serve        # http://127.0.0.1:4173
+npm run check        # فحوصات ثابتة
+npx playwright install chromium
+npm test             # اختبارات متصفح 1920×1080
+npm run build        # إنتاج مجلد _site
+```
+
+## النشر
+
+كل push إلى `main` يشغّل `.github/workflows/deploy.yml`:
+
+1. تثبيت الاعتماديات وChromium.
+2. `npm run check` للتحقق من الملفات والعقود ومنع أي اعتماد على منصات استضافة خارجية.
+3. `npm test` لاختبارات المتصفح مع محاكاة استجابات Kick.
+4. `npm run build` لإنتاج `_site`.
+5. رفع `_site` ونشرها إلى GitHub Pages.
+
+المصدر الوحيد للنشر هو GitHub Pages (`gh-pages` environment). لا توجد أي إعدادات لـ Cloudflare أو Vercel أو Render.
+
+## الاختبارات
+
+- **فحوصات ثابتة:** وجود الملفات، صحة صياغة JavaScript، وسوم HTML الأساسية (RTL، viewport، ترتيب السكربتات)، وجود `player.kick.com`، غياب أي كود scraping لبث الفيديو، وسلامة workflow النشر.
+- **اختبارات متصفح (Chromium 1080p):** تحميل الرئيسية، بيانات البث، فتح المشغل، المفضلة بعد إعادة التحميل، البحث، التنقل بالأسهم، عدم وجود Overflow أفقي على 1920×1080 و390×844، والتعامل مع حجب واجهة Kick.
+- **اختبارات لم تُنفّذ:** التشغيل على جهاز PS5 حقيقي. لا يمكن الادعاء بغير ذلك. راجع قسم القيود.
+
+## قيود مهمة على PS5
+
+- هذا **موقع ويب** وليس تطبيق PS5 أصلياً؛ لا يمكن تثبيته من متجر PlayStation.
+- متصفح PS5 المدمج محدود وقد يمنع الطلبات الخارجية (CORS)، أو التشغيل التلقائي، أو ملء الشاشة، أو حفظ ملفات تعريف الارتباط، حسب إصدار النظام.
+- يعتمد الفيديو على مشغل Kick الرسمي؛ إذا حجب المتصفح `player.kick.com` فلن يعمل الفيديو داخل الصفحة، ويبقى زر «فتح على Kick» بديلاً.
+- خريطة أزرار يد التحكم تعتمد على المتصفح. إذا لم يوصل المتصفح أحداث Gamepad، تعمل الأسهم وEnter كبديل مضمون.
+- حالة البث تُحدّث كل 45 ثانية كحد أقصى أثناء التصفح، وكل دقيقة داخل صفحة المشاهدة.
+
+## الخصوصية
+
+لا يوجد تتبع أو تحليلات أو حسابات. تُخزَّن المفضلة وسجل المشاهدة والإعدادات في `localStorage` على جهازك فقط. الصور والبيانات تُحمّل مباشرة من نطاقات Kick.
+
+## إخلاء مسؤولية
+
+Kick TV مشروع مستقل غير تابع لـ Kick أو Sony. جميع العلامات التجارية والمحتوى ملك لأصحابها. استخدم المشروع وفق شروط استخدام Kick.
