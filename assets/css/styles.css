@@ -203,6 +203,7 @@ body.kb-mode .hero-card:focus {
   display: flex;
   align-items: center;
   gap: 2rem;
+  width: calc(100% - 4rem);
   width: min(100% - 4rem, 1680px);
   height: 4.7rem;
   margin: 0 auto;
@@ -422,6 +423,7 @@ body.kb-mode .hero-card:focus {
 /* Main / shared ----------------------------------------------------------- */
 
 #main {
+  width: calc(100% - 4rem);
   width: min(100% - 4rem, 1680px);
   margin: 0 auto;
   outline: none;
@@ -1818,6 +1820,7 @@ h1:focus {
 /* Footer ------------------------------------------------------------------ */
 
 .site-footer {
+  width: calc(100% - 4rem);
   width: min(100% - 4rem, 1680px);
   margin: 2rem auto 0;
   padding: 2rem 0 2.4rem;
@@ -2363,6 +2366,7 @@ kbd {
   #main,
   .header-inner,
   .site-footer {
+    width: calc(100% - 6rem);
     width: min(100% - 6rem, 1760px);
   }
 }
