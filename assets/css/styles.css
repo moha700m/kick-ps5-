@@ -2450,6 +2450,24 @@ kbd {
 }
 
 @media (max-width: 520px) {
+  .player-poster {
+    gap: 0.35rem;
+    padding: 1rem 0.8rem;
+  }
+  .poster-kicker {
+    display: none;
+  }
+  .poster-text {
+    font-size: 0.76rem;
+  }
+  .poster-actions .btn {
+    padding: 0.45rem 0.8rem;
+    font-size: 0.78rem;
+  }
+  .poster-links {
+    gap: 0.3rem;
+    font-size: 0.68rem;
+  }
   .brand-text {
     display: none;
   }
